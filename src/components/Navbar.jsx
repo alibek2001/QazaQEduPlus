@@ -43,11 +43,20 @@ const Navbar = () => {
                     </>
                 )}
 
+                <div></div>
                 {user && role === 'teacher' && (
-                    <Link to='/upload' className='text-gray-700 hover:text-blue-600'>
-                        Upload
-                    </Link>
+                    <>
+                        <Link to='/upload' className='text-gray-700 hover:text-blue-600'>
+                            Upload
+                        </Link>
+                        <Link to='/teacher-dashboard' className='text-gray-700 hover:text-blue-600'>
+                            My Courses
+                        </Link>
+                    </>
                 )}
+                <div></div>
+                {user && <p className='text-xs text-gray-500'>Logged in as: {user.email}</p>}
+                {user && <span className='text-xs text-blue-600'>Role: {role}</span>}
             </div>
         </nav>
     )

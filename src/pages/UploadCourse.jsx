@@ -10,7 +10,7 @@ const UploadCourse = () => {
     const [description, setDescription] = useState('')
     const [videoUrl, setVideoUrl] = useState('')
     const [status, setStatus] = useState('')
-    const { role } = useAuth()
+    const { role, user } = useAuth()
 
     if (role !== 'teacher') {
         return <Navigate to='/' />
@@ -30,6 +30,7 @@ const UploadCourse = () => {
                 title: title.trim(),
                 description: description.trim(),
                 videoUrl: convertToEmbedUrl(videoUrl.trim()),
+                teacherId: user.uid, // 👈 critical!
             }
 
             console.log('Uploading:', newCourse)

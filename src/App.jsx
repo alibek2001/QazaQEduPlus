@@ -9,6 +9,8 @@ import PrivateRoute from './routes/PrivateRoute'
 import Courses from './pages/Courses'
 import CourseDetail from './pages/CourseDetail'
 import UploadCourse from './pages/UploadCourse'
+import TeacherDashboard from './pages/TeacherDashboard'
+import EditCourse from './pages/EditCourse'
 
 const App = () => {
     return (
@@ -26,6 +28,14 @@ const App = () => {
                             </PrivateRoute>
                         }
                     />
+                    <Route
+                        path='/teacher-dashboard'
+                        element={
+                            <PrivateRoute>
+                                <TeacherDashboard />
+                            </PrivateRoute>
+                        }
+                    />
                     <Route path='/courses' element={<Courses />} />
                     <Route path='/courses/:id' element={<CourseDetail />} />
                     <Route
@@ -37,10 +47,10 @@ const App = () => {
                         }
                     />
                     <Route
-                        path='/upload'
+                        path='/edit-course/:id'
                         element={
                             <PrivateRoute>
-                                <UploadCourse />
+                                <EditCourse />
                             </PrivateRoute>
                         }
                     />
