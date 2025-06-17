@@ -15,7 +15,7 @@ MONGODB_PORT="27017"
 
 # Пытаемся получить порт из server/.env
 if [ -f "server/.env" ]; then
-    ENV_PORT=$(grep -oP '(?<=mongodb://[^:]+:)\d+' server/.env)
+    ENV_PORT=$(grep -Eo 'mongodb://[^:]+:[0-9]+' server/.env | sed 's|.*:||')
     if [ -n "$ENV_PORT" ]; then
         MONGODB_PORT="$ENV_PORT"
     fi
