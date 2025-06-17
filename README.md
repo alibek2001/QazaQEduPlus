@@ -70,6 +70,20 @@ npm run dev
 npm run dev
 ```
 
+
 The client will be available at `http://localhost:5173` and the API server at
 `http://localhost:5001` by default.
+
+=======
+## Environment setup
+
+The backend relies on environment variables for database connection and token
+signing. Copy the example file and provide your own values:
+
+```bash
+cp server/.env.example server/.env
+```
+
+Open `server/.env` and replace the placeholders with your MongoDB URI and JWT
+secret.
 
