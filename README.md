@@ -73,8 +73,6 @@ npm run dev
 
 The client will be available at `http://localhost:5173` and the API server at
 `http://localhost:5001` by default.
-
-=======
 ## Environment setup
 
 The backend relies on environment variables for database connection and token
