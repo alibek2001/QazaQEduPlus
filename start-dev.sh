@@ -1,11 +1,14 @@
 #!/bin/bash
 
+# Корневая директория проекта
+ROOT_DIR="$(pwd)"
+
 # Создаем директорию для данных MongoDB, если она не существует
-MONGODB_DATA_DIR="$(pwd)/data/db"
+MONGODB_DATA_DIR="$ROOT_DIR/data/db"
 mkdir -p "$MONGODB_DATA_DIR"
 
 # Лог-файл MongoDB
-MONGODB_LOG="$(pwd)/data/mongodb.log"
+MONGODB_LOG="$ROOT_DIR/data/mongodb.log"
 
 # Порт MongoDB по умолчанию
 MONGODB_PORT="27017"
@@ -56,12 +59,15 @@ fi
 
 # Запуск сервера в фоновом режиме
 echo "Запуск сервера..."
-cd "$(pwd)/server" && npm run dev &
+cd "$ROOT_DIR/server" && npm run dev &
 SERVER_PID=$!
+
+# Возвращаемся в корневую директорию
+cd "$ROOT_DIR"
 
 # Запуск клиента
 echo "Запуск клиента..."
-cd "$(pwd)" && npm run dev &
+npm run dev &
 CLIENT_PID=$!
 
 # Функция для корректного завершения процессов при выходе
