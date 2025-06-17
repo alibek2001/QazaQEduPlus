@@ -1,54 +1,75 @@
-# React + TypeScript + Vite
+# QazaQEduPlus
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+QazaQEduPlus is a full‑stack educational platform. The repository contains a React
+client (in the project root) built with Vite and a Node.js/Express server located
+in the `server` directory. The client communicates with the API server for course
+management and user authentication.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Follow the steps below to run the project locally.
 
-## Expanding the ESLint configuration
+### 1. Install dependencies
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Install the client dependencies in the project root:
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Then install the server dependencies:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+cd server
+npm install
+cd ..
 ```
+
+### 2. Configure environment variables
+
+Copy the example file and adjust the values if needed:
+
+```bash
+cp server/.env.example server/.env
+```
+
+Edit `server/.env` to set your MongoDB connection string and JWT secret.
+
+### 3. MongoDB
+
+The application requires a MongoDB instance. You can run MongoDB locally or
+use a hosted MongoDB Atlas cluster. Update `MONGODB_URI` in `server/.env`
+accordingly. The provided `start-dev.sh` script tries to start a local MongoDB
+server using `data/db`; if it cannot, it falls back to using MongoDB Atlas.
+
+### 4. Seed test data (optional)
+
+Inside the `server` folder you can populate the database with test data:
+
+```bash
+npm run seed            # add sample courses
+npm run seed:student    # create a sample student
+npm run seed:test-users # create test accounts
+```
+
+### 5. Start the development servers
+
+Run both the client and server with the helper script:
+
+```bash
+./start-dev.sh
+```
+
+Alternatively, start them separately in different terminals:
+
+```bash
+# in the server folder
+npm run dev
+
+# in the project root
+npm run dev
+```
+
+The client will be available at `http://localhost:5173` and the API server at
+`http://localhost:5001` by default.
+
