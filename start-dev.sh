@@ -20,7 +20,17 @@ else
     # Если MongoDB не установлен, изменяем .env для использования MongoDB Atlas
     if [ -f "server/.env" ]; then
         # Используем MongoDB Atlas вместо локальной базы
-        sed -i '' 's|mongodb://localhost:27017/qazaqeduplus|mongodb+srv://demo:demo@cluster0.mongodb.net/qazaqeduplus?retryWrites=true&w=majority|g' server/.env
+        # Определяем ОС и применяем корректный вариант sed:
+        #   macOS  -> sed -i ''
+        #   Linux  -> sed -i
+        case "$(uname)" in
+            Darwin)
+                sed -i '' 's|mongodb://localhost:27017/qazaqeduplus|mongodb+srv://demo:demo@cluster0.mongodb.net/qazaqeduplus?retryWrites=true&w=majority|g' server/.env
+                ;;
+            *)
+                sed -i 's|mongodb://localhost:27017/qazaqeduplus|mongodb+srv://demo:demo@cluster0.mongodb.net/qazaqeduplus?retryWrites=true&w=majority|g' server/.env
+                ;;
+        esac
         echo "Конфигурация обновлена для использования MongoDB Atlas"
     fi
 fi
