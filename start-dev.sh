@@ -4,6 +4,20 @@
 MONGODB_DATA_DIR="$(pwd)/data/db"
 mkdir -p "$MONGODB_DATA_DIR"
 
+# Лог-файл MongoDB
+MONGODB_LOG="$(pwd)/data/mongodb.log"
+
+# Порт MongoDB по умолчанию
+MONGODB_PORT="27017"
+
+# Пытаемся получить порт из server/.env
+if [ -f "server/.env" ]; then
+    ENV_PORT=$(grep -oP '(?<=mongodb://[^:]+:)\d+' server/.env)
+    if [ -n "$ENV_PORT" ]; then
+        MONGODB_PORT="$ENV_PORT"
+    fi
+fi
+
 # Запуск MongoDB напрямую
 echo "Запуск MongoDB..."
 if command -v mongod &> /dev/null; then
@@ -11,8 +25,13 @@ if command -v mongod &> /dev/null; then
     if pgrep mongod > /dev/null; then
         echo "MongoDB уже запущен"
     else
-        echo "Запуск MongoDB с использованием локальной директории данных..."
-        mongod --dbpath "$MONGODB_DATA_DIR" --logpath "$(pwd)/data/mongodb.log" --fork || echo "Не удалось запустить MongoDB"
+        echo "Запуск MongoDB с использованием локальной директории данных $MONGODB_DATA_DIR на порту $MONGODB_PORT..."
+        mongod --dbpath "$MONGODB_DATA_DIR" --port "$MONGODB_PORT" --logpath "$MONGODB_LOG" --fork
+        if pgrep mongod > /dev/null; then
+            echo "MongoDB успешно запущен. Порт: $MONGODB_PORT, директория данных: $MONGODB_DATA_DIR"
+        else
+            echo "Не удалось запустить MongoDB. Проверьте лог $MONGODB_LOG"
+        fi
     fi
 else
     echo "MongoDB не найден. Убедитесь, что MongoDB установлен или используйте MongoDB Atlas."
