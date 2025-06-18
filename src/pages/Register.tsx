@@ -109,9 +109,10 @@ const Register: React.FC = () => {
       
       // Перенаправление на главную страницу после успешной регистрации
       navigate('/');
-    } catch (err: any) {
-      console.error('Registration error:', err);
-      setError(err.response?.data?.message || 'Ошибка при регистрации. Пожалуйста, попробуйте позже.');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } } };
+      console.error('Registration error:', error);
+      setError(error.response?.data?.message || 'Ошибка при регистрации. Пожалуйста, попробуйте позже.');
     }
   };
 
@@ -305,42 +306,42 @@ const Register: React.FC = () => {
               Пожалуйста, проверьте введенные данные:
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <Typography variant="body2" color="text.secondary">
                   Имя:
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <Typography variant="body2" fontWeight="medium">
                   {firstName}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <Typography variant="body2" color="text.secondary">
                   Фамилия:
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <Typography variant="body2" fontWeight="medium">
                   {lastName}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <Typography variant="body2" color="text.secondary">
                   Email:
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <Typography variant="body2" fontWeight="medium">
                   {email}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <Typography variant="body2" color="text.secondary">
                   Роль:
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{ xs: 6 }}>
                 <Typography variant="body2" fontWeight="medium">
                   {role === 'student' ? 'Студент' : 'Преподаватель'}
                 </Typography>
@@ -382,7 +383,7 @@ const Register: React.FC = () => {
   return (
     <Container component="main" maxWidth="lg" sx={{ mb: 8 }}>
       <Grid container spacing={4} sx={{ mt: 4 }}>
-        <Grid item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <Box
             sx={{
               display: 'flex',
@@ -412,7 +413,7 @@ const Register: React.FC = () => {
             />
           </Box>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid size={{ xs: 12, sm: 6 }}>
           <Paper
             elevation={6}
             sx={{ p: 4, maxWidth: '500px', width: '100%', mx: 'auto' }}
@@ -482,7 +483,7 @@ const Register: React.FC = () => {
               </Box>
               
               <Grid container spacing={2} sx={{ mt: 2 }}>
-                <Grid item xs={6}>
+                <Grid size={{ xs: 6 }}>
                   <Button
                     fullWidth
                     variant="outlined"
@@ -492,7 +493,7 @@ const Register: React.FC = () => {
                     Google
                   </Button>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={{ xs: 6 }}>
                   <Button
                     fullWidth
                     variant="outlined"

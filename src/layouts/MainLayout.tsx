@@ -10,6 +10,7 @@ import {
   Drawer, 
   List, 
   ListItem, 
+  ListItemButton,
   ListItemText, 
   ListItemIcon,
   Divider,
@@ -22,12 +23,23 @@ import {
   School as SchoolIcon, 
   Info as InfoIcon, 
   Login as LoginIcon,
-  PersonAdd as RegisterIcon
+  PersonAdd as RegisterIcon,
+  Dashboard as DashboardIcon, 
+  Person as ProfileIcon, 
+  Add as CreateIcon, 
+  Logout as LogoutIcon
 } from '@mui/icons-material';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 interface MainLayoutProps {
   children: React.ReactNode;
+}
+
+interface MenuItem {
+  text: string;
+  path: string;
+  icon: React.ReactNode;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
@@ -35,17 +47,40 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { isAuthenticated, isTeacher, isStudent, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const menuItems = [
+  // Common menu items for all users
+  const menuItems: MenuItem[] = [
     { text: 'Главная', path: '/', icon: <HomeIcon /> },
     { text: 'Курсы', path: '/courses', icon: <SchoolIcon /> },
     { text: 'О нас', path: '/about', icon: <InfoIcon /> },
   ];
 
-  const authItems = [
+  // Auth items for non-authenticated users
+  const authItems: MenuItem[] = [
     { text: 'Войти', path: '/login', icon: <LoginIcon /> },
     { text: 'Регистрация', path: '/register', icon: <RegisterIcon /> },
   ];
+  
+  // Teacher specific menu items
+  const teacherItems: MenuItem[] = [
+    { text: 'Панель управления', path: '/teacher/dashboard', icon: <DashboardIcon /> },
+    { text: 'Профиль', path: '/teacher/profile', icon: <ProfileIcon /> },
+    { text: 'Создать курс', path: '/teacher/courses/create', icon: <CreateIcon /> },
+  ];
+  
+  // Student specific menu items
+  const studentItems: MenuItem[] = [
+    { text: 'Панель управления', path: '/student/dashboard', icon: <DashboardIcon /> },
+    { text: 'Профиль', path: '/student/profile', icon: <ProfileIcon /> },
+  ];
+  
+  // Handle logout
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
@@ -74,19 +109,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <List>
         {menuItems.map((item) => (
           <ListItem 
-            button 
-            component={RouterLink} 
-            to={item.path} 
             key={item.text}
-            selected={location.pathname === item.path}
             sx={{
-              '&.Mui-selected': {
-                backgroundColor: 'primary.light',
-                color: 'white',
-                '& .MuiListItemIcon-root': {
-                  color: 'white',
-                },
-              },
               '&:hover': {
                 backgroundColor: 'primary.light',
                 color: 'white',
@@ -94,44 +118,124 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   color: 'white',
                 },
               },
+              backgroundColor: location.pathname === item.path ? 'primary.light' : 'transparent',
+              color: location.pathname === item.path ? 'white' : 'inherit',
+              '& .MuiListItemIcon-root': {
+                color: location.pathname === item.path ? 'white' : 'inherit',
+              },
             }}
           >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
+            <ListItemButton component={RouterLink} to={item.path}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItemButton>
           </ListItem>
         ))}
       </List>
       <Divider />
-      <List>
-        {authItems.map((item) => (
-          <ListItem 
-            button 
-            component={RouterLink} 
-            to={item.path} 
-            key={item.text}
-            selected={location.pathname === item.path}
-            sx={{
-              '&.Mui-selected': {
-                backgroundColor: 'primary.light',
-                color: 'white',
-                '& .MuiListItemIcon-root': {
+      
+      {/* Show role-specific menu items if authenticated */}
+      {isAuthenticated ? (
+        <>
+          <List>
+            {isTeacher && teacherItems.map((item) => (
+              <ListItem 
+                key={item.text}
+                sx={{
+                  '&:hover': {
+                    backgroundColor: 'primary.light',
+                    color: 'white',
+                    '& .MuiListItemIcon-root': {
+                      color: 'white',
+                    },
+                  },
+                  backgroundColor: location.pathname === item.path ? 'primary.light' : 'transparent',
+                  color: location.pathname === item.path ? 'white' : 'inherit',
+                  '& .MuiListItemIcon-root': {
+                    color: location.pathname === item.path ? 'white' : 'inherit',
+                  },
+                }}
+              >
+                <ListItemButton component={RouterLink} to={item.path}>
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+            
+            {isStudent && studentItems.map((item) => (
+              <ListItem 
+                key={item.text}
+                sx={{
+                  '&:hover': {
+                    backgroundColor: 'primary.light',
+                    color: 'white',
+                    '& .MuiListItemIcon-root': {
+                      color: 'white',
+                    },
+                  },
+                  backgroundColor: location.pathname === item.path ? 'primary.light' : 'transparent',
+                  color: location.pathname === item.path ? 'white' : 'inherit',
+                  '& .MuiListItemIcon-root': {
+                    color: location.pathname === item.path ? 'white' : 'inherit',
+                  },
+                }}
+              >
+                <ListItemButton component={RouterLink} to={item.path}>
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText primary={item.text} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <List>
+            <ListItem 
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'primary.light',
                   color: 'white',
+                  '& .MuiListItemIcon-root': {
+                    color: 'white',
+                  },
                 },
-              },
-              '&:hover': {
-                backgroundColor: 'primary.light',
-                color: 'white',
-                '& .MuiListItemIcon-root': {
+              }}
+            >
+              <ListItemButton onClick={handleLogout}>
+                <ListItemIcon><LogoutIcon /></ListItemIcon>
+                <ListItemText primary="Выйти" />
+              </ListItemButton>
+            </ListItem>
+          </List>
+        </>
+      ) : (
+        <List>
+          {authItems.map((item) => (
+            <ListItem 
+              key={item.text}
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'primary.light',
                   color: 'white',
+                  '& .MuiListItemIcon-root': {
+                    color: 'white',
+                  },
                 },
-              },
-            }}
-          >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
-          </ListItem>
-        ))}
-      </List>
+                backgroundColor: location.pathname === item.path ? 'primary.light' : 'transparent',
+                color: location.pathname === item.path ? 'white' : 'inherit',
+                '& .MuiListItemIcon-root': {
+                  color: location.pathname === item.path ? 'white' : 'inherit',
+                },
+              }}
+            >
+              <ListItemButton component={RouterLink} to={item.path}>
+                <ListItemIcon>{item.icon}</ListItemIcon>
+                <ListItemText primary={item.text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      )}
     </Box>
   );
 
@@ -179,29 +283,93 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           )}
           {!isMobile && (
             <Box sx={{ display: 'flex', gap: 1 }}>
-              <Button 
-                color="inherit" 
-                variant="outlined" 
-                component={RouterLink} 
-                to="/login"
-                sx={{ 
-                  borderColor: 'white',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    borderColor: 'white',
-                  }
-                }}
-              >
-                Войти
-              </Button>
-              <Button 
-                color="secondary" 
-                variant="contained" 
-                component={RouterLink} 
-                to="/register"
-              >
-                Регистрация
-              </Button>
+              {isAuthenticated ? (
+                <>
+                  {/* Show role-specific navigation buttons */}
+                  {isTeacher && teacherItems.map((item) => (
+                    <Button 
+                      key={item.text}
+                      color="inherit" 
+                      component={RouterLink} 
+                      to={item.path}
+                      sx={{ 
+                        fontWeight: location.pathname === item.path ? 'bold' : 'normal',
+                        borderBottom: location.pathname === item.path ? '2px solid white' : 'none',
+                        borderRadius: 0,
+                        '&:hover': {
+                          backgroundColor: 'transparent',
+                          borderBottom: '2px solid white',
+                        }
+                      }}
+                    >
+                      {item.text}
+                    </Button>
+                  ))}
+                  
+                  {isStudent && studentItems.map((item) => (
+                    <Button 
+                      key={item.text}
+                      color="inherit" 
+                      component={RouterLink} 
+                      to={item.path}
+                      sx={{ 
+                        fontWeight: location.pathname === item.path ? 'bold' : 'normal',
+                        borderBottom: location.pathname === item.path ? '2px solid white' : 'none',
+                        borderRadius: 0,
+                        '&:hover': {
+                          backgroundColor: 'transparent',
+                          borderBottom: '2px solid white',
+                        }
+                      }}
+                    >
+                      {item.text}
+                    </Button>
+                  ))}
+                  
+                  {/* Logout button */}
+                  <Button 
+                    color="inherit" 
+                    variant="outlined" 
+                    onClick={handleLogout}
+                    sx={{ 
+                      borderColor: 'white',
+                      marginLeft: 2,
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderColor: 'white',
+                      }
+                    }}
+                  >
+                    Выйти
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button 
+                    color="inherit" 
+                    variant="outlined" 
+                    component={RouterLink} 
+                    to="/login"
+                    sx={{ 
+                      borderColor: 'white',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderColor: 'white',
+                      }
+                    }}
+                  >
+                    Войти
+                  </Button>
+                  <Button 
+                    color="secondary" 
+                    variant="contained" 
+                    component={RouterLink} 
+                    to="/register"
+                  >
+                    Регистрация
+                  </Button>
+                </>
+              )}
             </Box>
           )}
         </Toolbar>

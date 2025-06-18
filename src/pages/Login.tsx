@@ -83,7 +83,7 @@ const Login: React.FC = () => {
   return (
     <Container component="main" maxWidth="lg" sx={{ mb: 8, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
       <Grid container spacing={4} sx={{ mt: 4, justifyContent: 'center' }}>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Box
             sx={{
               display: 'flex',
@@ -113,7 +113,7 @@ const Login: React.FC = () => {
             />
           </Box>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Paper
             elevation={3}
             sx={{
@@ -213,7 +213,7 @@ const Login: React.FC = () => {
               </Box>
               
               <Grid container spacing={2} justifyContent="center">
-                <Grid item xs={6}>
+                <Grid size={{ xs: 6 }}>
                   <Button
                     fullWidth
                     variant="outlined"
@@ -223,7 +223,7 @@ const Login: React.FC = () => {
                     Google
                   </Button>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={{ xs: 6 }}>
                   <Button
                     fullWidth
                     variant="outlined"

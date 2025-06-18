@@ -3,10 +3,12 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import connectDB from './config/db';
+import { sanitizeMongoQuery, errorHandler, notFound } from './middleware/validation';
 
 // Импорт маршрутов
 import authRoutes from './routes/authRoutes';
 import courseRoutes from './routes/courseRoutes';
+import studentRoutes from './routes/studentRoutes';
 
 // Загрузка переменных окружения
 dotenv.config();
@@ -18,6 +20,10 @@ const app = express();
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Добавляем мидлвар для санитайзинга запросов
+app.use(sanitizeMongoQuery);
 
 // Настройка CORS для работы с фронтендом
 app.use(cors({
@@ -47,6 +53,7 @@ app.use((req, res, next) => {
 // Определение маршрутов
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
+app.use('/api/students', studentRoutes);
 
 // Базовый маршрут
 app.get('/', (req, res) => {
@@ -54,9 +61,11 @@ app.get('/', (req, res) => {
 });
 
 // Обработка ошибок
-app.use((req, res) => {
-  res.status(404).json({ message: 'Маршрут не найден' });
-});
+// Обработчик 404 ошибок
+app.use(notFound);
+
+// Обработчик серверных ошибок
+app.use(errorHandler);
 
 // Определение порта и запуск сервера
 const PORT = process.env.PORT || 5001;
